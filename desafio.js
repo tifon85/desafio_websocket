@@ -43,6 +43,7 @@ class ProductManager{
 
 }
 
+
 const products = new ProductManager()
 //console.log(products.addProduct('asd', 'dsa', '14.23', 'ert', 'qwe', 12))
 //console.log(products.addProduct('asd', 'dsa', '14.23', 'ert', 'qwa', 12))
