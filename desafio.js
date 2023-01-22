@@ -1,39 +1,52 @@
 
+const fs = require('fs')
+
 class ProductManager{
-    constructor(){
-        this.productos=[]
+    constructor(ruta){
+        this.path=ruta
     }
 
-    addProduct = (title,description,price,thumbnail,code,stock) => {
-        let yaEsta = this.productos.find(item=> item.code == code)
-        if(!yaEsta){
-            const producto = {
-                title,
-                description,
-                price,
-                thumbnail,
-                code,
-                stock
-            }
-            if(this.productos == 0){ 
-                producto.id=1
+    addProduct = async (title, description, price, thumbnail, code, stock) => {
+        let productos = await this.getProducts()
+        let yaEsta = productos.find(item => item.code == code)
+        try{
+            if(!yaEsta){
+                const producto = {
+                    title,
+                    description,
+                    price,
+                    thumbnail,
+                    code,
+                    stock
+                }
+                if(productos == 0){ 
+                    producto.id=1
+                }else{
+                    producto.id=productos[productos.length-1].id + 1
+                }
+                await fs.promises.writeFile(this.path, JSON.stringify(productos), 'utf-8')
+                return 'El producto ya fue agregado'
             }else{
-                producto.id=this.productos[this.productos.length-1].id + 1
+                return 'El producto ya existe'
             }
-            this.productos = [...this.productos, producto]
-            //console.log(this.productos)
-            return 'El producto ya fue agregado'
-        }else{
-            return 'El producto ya existe'
+        }catch (error) {
+            console.log(error)
         }
     }
 
-    getProducts = () => {
-        return this.productos
+    getProducts = async () => {
+        try{
+            let dataProductos = await fs.promises.readFile(this.path, 'utf-8')
+            let productos = JSON.parse(dataProductos)
+            return productos
+        }catch (error) {
+            console.log(error)
+        }
     }
 
-    getProductById = (id) => {
-        let yaEsta = this.productos.filter(item => item.id == id)
+    getProductById = async (id) => {
+        let productos = await this.getProducts()
+        let yaEsta = productos.filter(item => item.id == id)
         if(yaEsta){
             return yaEsta
         }else{
@@ -43,8 +56,7 @@ class ProductManager{
 
 }
 
-
-const products = new ProductManager()
+const products = new ProductManager('./Productos.json')
 //console.log(products.addProduct('asd', 'dsa', '14.23', 'ert', 'qwe', 12))
 //console.log(products.addProduct('asd', 'dsa', '14.23', 'ert', 'qwa', 12))
 //console.log(products.addProduct('asd', 'dsa', '14.23', 'ert', 'qwi', 12))
