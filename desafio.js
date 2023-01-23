@@ -24,7 +24,7 @@ class ProductManager{
                 }else{
                     producto.id=productos[productos.length-1].id + 1
                 }
-                await fs.promises.writeFile(this.path, JSON.stringify(productos), 'utf-8')
+                await fs.promises.writeFile(this.path, JSON.stringify(productos, null,'\t'), 'utf-8')
                 return 'El producto ya fue agregado'
             }else{
                 return 'El producto ya existe'
@@ -46,19 +46,54 @@ class ProductManager{
 
     getProductById = async (id) => {
         let productos = await this.getProducts()
-        let yaEsta = productos.filter(item => item.id == id)
-        if(yaEsta){
-            return yaEsta
-        }else{
-            return 'No se encontró el producto'
+        let yaEsta = productos.find(item => item.id == id)
+        try{
+            if(yaEsta){
+                return yaEsta
+            }else{
+                return 'No se encontró el producto'
+            }
+        }catch (error){
+            console.log(error)
+        }
+        
+    }
+
+    updateProduct = async (id) => {
+        let productos = await this.getProducts()
+        let index = await productos.findIndex(product => product.id === id)
+        try{
+            if(index === -1){
+                return 'No se encontró el producto a actualizar'
+            }
+            productos[index] = { ...campoActualizar, id: productos[index].id }
+            fs.promises.writeFile(this.path, JSON.stringify(productos, null,'\t'))
+            console.log('Producto actualizado en la base de datos');
+        }catch (error){
+            console.log(error)
+        }
+    }
+
+    deleteProduct = async (id) => {
+        let productos = await this.getProducts()
+        let index = await productos.findIndex(product => product.id === id)
+        try{
+            if(index === -1){
+                return 'No se encontró el producto a actualizar'
+            }
+            productos.splice(index, 1)
+            fs.promises.writeFile(this.path, JSON.stringify(productos, null,'\t'))
+            console.log('Producto eliminado de la base de datos');
+        }catch (error){
+            console.log(error)
         }
     }
 
 }
 
 const products = new ProductManager('./Productos.json')
-//console.log(products.addProduct('asd', 'dsa', '14.23', 'ert', 'qwe', 12))
+console.log(products.addProduct('asd', 'dsa', '14.23', 'ert', 'qwe', 12))
 //console.log(products.addProduct('asd', 'dsa', '14.23', 'ert', 'qwa', 12))
 //console.log(products.addProduct('asd', 'dsa', '14.23', 'ert', 'qwi', 12))
-//console.log(products.getProducts())
+console.log(products.getProducts())
 //console.log(products.getProductById(3))
