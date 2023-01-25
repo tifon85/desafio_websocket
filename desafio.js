@@ -19,12 +19,12 @@ class ProductManager{
                     code,
                     stock
                 }
-                if(productos == 0){ 
+                if(productos.length == 0){ 
                     producto.id=1
                 }else{
                     producto.id=productos[productos.length-1].id + 1
                 }
-                await fs.promises.writeFile(this.path, JSON.stringify(productos, null,'\t'), 'utf-8')
+                await fs.promises.writeFile(this.path, JSON.stringify(productos, '\t'), 'utf-8')
                 return 'El producto ya fue agregado'
             }else{
                 return 'El producto ya existe'
@@ -36,6 +36,9 @@ class ProductManager{
 
     getProducts = async () => {
         try{
+            if(!fs.existsSync(this.path)){
+                await fs.promises.writeFile(this.path, '[]', 'utf-8')
+            }
             let dataProductos = await fs.promises.readFile(this.path, 'utf-8')
             let productos = JSON.parse(dataProductos)
             return productos
@@ -59,14 +62,14 @@ class ProductManager{
         
     }
 
-    updateProduct = async (id) => {
+    updateProduct = async (id, productoActualizado) => {
         let productos = await this.getProducts()
         let index = await productos.findIndex(product => product.id === id)
         try{
             if(index === -1){
                 return 'No se encontró el producto a actualizar'
             }
-            productos[index] = { ...campoActualizar, id: productos[index].id }
+            productos[index] = { ...productoActualizado, id: productos[index].id }
             fs.promises.writeFile(this.path, JSON.stringify(productos, null,'\t'))
             console.log('Producto actualizado en la base de datos');
         }catch (error){
@@ -92,8 +95,9 @@ class ProductManager{
 }
 
 const products = new ProductManager('./Productos.json')
-console.log(products.addProduct('asd', 'dsa', '14.23', 'ert', 'qwe', 12))
 //console.log(products.addProduct('asd', 'dsa', '14.23', 'ert', 'qwa', 12))
 //console.log(products.addProduct('asd', 'dsa', '14.23', 'ert', 'qwi', 12))
-console.log(products.getProducts())
+//console.log(products.getProducts())
 //console.log(products.getProductById(3))
+//console.log(products.updateProduct(2, {title: 'asd2', description: 'dsa2', price: '14.43', thumbnail: 'ert2', code: 'qwa2', stock: 24} ))
+//console.log(products.deleteProduct(2))
