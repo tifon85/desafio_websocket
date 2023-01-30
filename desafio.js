@@ -95,9 +95,9 @@ class ProductManager{
 }
 
 const products = new ProductManager('./Productos.json')
-//console.log(products.addProduct('asd', 'dsa', '14.23', 'ert', 'qwa', 12))
+console.log(products.addProduct('asd', 'dsa', '14.23', 'ert', 'qwa', 12))
 //console.log(products.addProduct('asd', 'dsa', '14.23', 'ert', 'qwi', 12))
 //console.log(products.getProducts())
-//console.log(products.getProductById(3))
+//console.log(products.getProductById(1))
 //console.log(products.updateProduct(2, {title: 'asd2', description: 'dsa2', price: '14.43', thumbnail: 'ert2', code: 'qwa2', stock: 24} ))
 //console.log(products.deleteProduct(2))
