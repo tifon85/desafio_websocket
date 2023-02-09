@@ -1,7 +1,7 @@
 
-const fs = require('fs')
+import fs from 'fs'
 
-class ProductManager{
+export class ProductManager{
     constructor(ruta){
         this.path=ruta
     }
@@ -94,31 +94,10 @@ class ProductManager{
 
 }
 
-const products = new ProductManager('./Productos.json')
+//const products = new ProductManager('./Productos.json')
 //console.log(products.addProduct('asd', 'dsa', '14.23', 'ert', 'qwa', 12))
 //console.log(products.addProduct('asd', 'dsa', '14.23', 'ert', 'qwi', 12))
 //console.log(products.getProducts())
 //console.log(products.getProductById(1))
 //console.log(products.updateProduct(2, {title: 'asd2', description: 'dsa2', price: '14.43', thumbnail: 'ert2', code: 'qwa2', stock: 24} ))
 //console.log(products.deleteProduct(2))
-
-const app = express()
-const PORT = 8080
-
-app.get('/products', async (req, res)=>{
-    const {limit} = req.query
-    try{
-        const data = await products.getProducts()
-        limit ? res.send(date.filter(product => product.id <= limit)) : res.send(data)
-    }catch (error){
-        console.log(error)
-    }
-})
-
-app.get('/products/:pid', async (req, res)=>{
-    const {pid} = req.params
-    let productos = await products.getProducts()
-    let producto = productos.find(product => product.id === pid)
-    if(!producto) return 'No existe el producto'
-    res.send(producto)
-})
